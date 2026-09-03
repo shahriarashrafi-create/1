@@ -1,0 +1,16 @@
+name = "bale-directors-event"
+main = "worker.js"
+compatibility_date = "2026-08-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+EVENT_ID = "directors-event"
+EVENT_TITLE = "ایونت دایرکتورها"
+# بعد از اولین Deploy، آدرس Worker را اینجا قرار بده و دوباره Deploy کن
+APP_URL = ""
+# آیدی عددی گروه بله؛ اگر خالی بماند عکس فقط در مینی‌اپ ثبت می‌شود
+BALE_GROUP_CHAT_ID = ""
+
+[[kv_namespaces]]
+binding = "ARRIVALS"
+id = "PUT_YOUR_KV_NAMESPACE_ID_HERE"

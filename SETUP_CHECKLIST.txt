@@ -1,0 +1,18 @@
+چک‌لیست سریع راه‌اندازی
+
+[ ] 1. ربات را با @BotFatherBale بساز
+[ ] 2. ربات را به گروه ایونت اضافه کن
+[ ] 3. Cloudflare KV بساز
+[ ] 4. KV id را در wrangler.toml جایگزین کن
+[ ] 5. npm install
+[ ] 6. npx wrangler login
+[ ] 7. npm run deploy
+[ ] 8. آدرس Worker را در APP_URL بگذار
+[ ] 9. npx wrangler secret put BALE_BOT_TOKEN
+[ ] 10. npx wrangler secret put ADMIN_KEY
+[ ] 11. آیدی گروه را در BALE_GROUP_CHAT_ID بگذار
+[ ] 12. دوباره npm run deploy
+[ ] 13. webhook را روی /webhook تنظیم کن
+[ ] 14. داخل گروه /start بفرست
+
+تمام.
