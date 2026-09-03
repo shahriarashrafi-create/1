@@ -1,0 +1,75 @@
+name: Extract uploaded ZIP
+
+on:
+  push:
+    paths:
+      - "**.zip"
+      - ".github/workflows/extract-zip.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Find newest ZIP
+        id: zip
+        shell: bash
+        run: |
+          ZIP_FILE="$(find . -type f -iname '*.zip' -not -path './.git/*' -printf '%T@ %p\n' | sort -nr | head -1 | cut -d' ' -f2-)"
+          if [ -z "$ZIP_FILE" ]; then
+            echo "No ZIP file found."
+            exit 1
+          fi
+
+          echo "file=$ZIP_FILE" >> "$GITHUB_OUTPUT"
+
+      - name: Extract ZIP
+        shell: bash
+        run: |
+          rm -rf extracted
+          mkdir -p extracted
+
+          unzip -q "${{ steps.zip.outputs.file }}" -d extracted
+
+          find extracted -type d -name "__MACOSX" -prune -exec rm -rf {} +
+
+      - name: Move project files to repository root
+        shell: bash
+        run: |
+          FIRST_DIR="$(find extracted -mindepth 1 -maxdepth 1 -type d | head -1)"
+
+          if [ -n "$FIRST_DIR" ] && [ "$(find extracted -mindepth 1 -maxdepth 1 | wc -l)" -eq 1 ]; then
+            cp -a "$FIRST_DIR"/. .
+          else
+            cp -a extracted/. .
+          fi
+
+          rm -rf extracted
+
+      - name: Remove uploaded ZIP
+        shell: bash
+        run: |
+          rm -f "${{ steps.zip.outputs.file }}"
+
+      - name: Commit extracted files
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add .
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git commit -m "Extract uploaded mini app"
+          git push
